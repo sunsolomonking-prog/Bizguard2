@@ -2,6 +2,7 @@ import React from 'react';
 import { Bell, Search, Menu, Sun, Moon, User, LogOut } from 'lucide-react';
 import { useAppStore } from '../../store';
 import { cn } from '../../utils/cn';
+import { signOut } from '../../lib/supabase';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -14,7 +15,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   const unreadAlerts = alerts.filter((a) => !a.isRead);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     setUser(null);
     window.location.href = '/login';
   };
