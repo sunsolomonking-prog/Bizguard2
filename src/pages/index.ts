@@ -1,0 +1,11 @@
+export { Dashboard } from './Dashboard';
+export { Sales } from './Sales';
+export { Inventory } from './Inventory';
+export { Debtors } from './Debtors';
+export { AIAssistant } from './AIAssistant';
+export { RiskScore } from './RiskScore';
+export { Alerts } from './Alerts';
+export { Reports } from './Reports';
+export { Predictions } from './Predictions';
+export { Opportunities } from './Opportunities';
+export { Settings } from './Settings';
