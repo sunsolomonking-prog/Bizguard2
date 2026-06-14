@@ -49,6 +49,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       users: {
         Row: {
@@ -75,6 +76,7 @@ export interface Database {
           role?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       products: {
         Row: {
@@ -131,6 +133,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       sales: {
         Row: {
@@ -172,6 +175,7 @@ export interface Database {
           created_at?: string;
           created_by?: string;
         };
+        Relationships: [];
       };
       sale_items: {
         Row: {
@@ -204,6 +208,7 @@ export interface Database {
           discount?: number;
           total?: number;
         };
+        Relationships: [];
       };
       customers: {
         Row: {
@@ -248,6 +253,7 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
       invoices: {
         Row: {
@@ -295,6 +301,7 @@ export interface Database {
           status?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       alerts: {
         Row: {
@@ -330,6 +337,7 @@ export interface Database {
           action_url?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       action_cards: {
         Row: {
@@ -365,6 +373,43 @@ export interface Database {
           due_date?: string | null;
           created_at?: string;
         };
+        Relationships: [];
+      };
+      stock_movements: {
+        Row: {
+          id: string;
+          business_id: string;
+          product_id: string;
+          type: string;
+          quantity: number;
+          reason: string;
+          reference: string | null;
+          created_at: string;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          product_id: string;
+          type: string;
+          quantity: number;
+          reason: string;
+          reference?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          product_id?: string;
+          type?: string;
+          quantity?: number;
+          reason?: string;
+          reference?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [];
       };
     };
     Views: {};
