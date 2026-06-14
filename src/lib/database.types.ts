@@ -140,6 +140,7 @@ export interface Database {
           id: string;
           business_id: string;
           customer_id: string | null;
+          invoice_number: string;
           subtotal: number;
           tax: number;
           discount: number;
@@ -147,12 +148,13 @@ export interface Database {
           payment_method: string;
           status: string;
           created_at: string;
-          created_by: string;
+          created_by: string | null;
         };
         Insert: {
           id?: string;
           business_id: string;
           customer_id?: string | null;
+          invoice_number: string;
           subtotal: number;
           tax: number;
           discount: number;
@@ -160,12 +162,13 @@ export interface Database {
           payment_method: string;
           status: string;
           created_at?: string;
-          created_by: string;
+          created_by: string | null;
         };
         Update: {
           id?: string;
           business_id?: string;
           customer_id?: string | null;
+          invoice_number?: string;
           subtotal?: number;
           tax?: number;
           discount?: number;
@@ -173,7 +176,7 @@ export interface Database {
           payment_method?: string;
           status?: string;
           created_at?: string;
-          created_by?: string;
+          created_by?: string | null;
         };
         Relationships: [];
       };
@@ -260,6 +263,7 @@ export interface Database {
           id: string;
           business_id: string;
           customer_id: string;
+          sale_id: string | null;
           invoice_number: string;
           subtotal: number;
           tax: number;
@@ -275,6 +279,7 @@ export interface Database {
           id?: string;
           business_id: string;
           customer_id: string;
+          sale_id: string | null;
           invoice_number: string;
           subtotal: number;
           tax: number;
@@ -290,6 +295,7 @@ export interface Database {
           id?: string;
           business_id?: string;
           customer_id?: string;
+          sale_id?: string | null;
           invoice_number?: string;
           subtotal?: number;
           tax?: number;
@@ -413,7 +419,20 @@ export interface Database {
       };
     };
     Views: {};
-    Functions: {};
+    Functions: {
+      create_pos_sale: {
+        Args: {
+          p_business_id: string;
+          p_customer_id?: string | null;
+          p_payment_method?: string;
+          p_discount?: number;
+          p_tax?: number;
+          p_due_date?: string | null;
+          p_items?: Json;
+        };
+        Returns: string;
+      };
+    };
     Enums: {};
   };
 }
