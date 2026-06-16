@@ -21,19 +21,65 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-export const signUp = async (email: string, password: string, businessName: string, name?: string) => {
+export const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export const normalizeUuid = (value?: string | null) => {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  return UUID_REGEX.test(trimmed) ? trimmed : null;
+};
+
+export const normalizeNullableText = (value?: string | null) => {
+  const trimmed = value?.trim();
+  return trimmed || null;
+};
+
+export const ensureUserProfile = async (options?: {
+  businessId?: string | null;
+  name?: string | null;
+  businessName?: string | null;
+  industry?: string | null;
+}) => {
+  const { data, error } = await supabase.rpc('ensure_user_profile', {
+    p_business_id: normalizeUuid(options?.businessId),
+    p_name: normalizeNullableText(options?.name),
+    p_business_name: normalizeNullableText(options?.businessName),
+    p_industry: normalizeNullableText(options?.industry),
+  });
+
+  return { profile: data, error };
+};
+
+export const signUp = async (email: string, password: string, businessName: string, name?: string, businessId?: string | null) => {
+  const normalizedBusinessId = normalizeUuid(businessId);
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${window.location.origin}/`,
       data: {
-        business_name: businessName,
-        name: name || email.split('@')[0],
+        business_id: normalizedBusinessId,
+        business_name: normalizeNullableText(businessName),
+        name: normalizeNullableText(name) || email.split('@')[0],
       },
     },
   });
-  return { data, error };
+
+  if (error) return { data, error };
+
+  // If email confirmation is disabled Supabase returns a session immediately.
+  // Ensure the profile exists. If confirmation is enabled, this will run after login.
+  if (data.session) {
+    const { error: profileError } = await ensureUserProfile({
+      businessId: normalizedBusinessId,
+      name,
+      businessName,
+    });
+    if (profileError) return { data, error: profileError };
+  }
+
+  return { data, error: null };
 };
 
 export const signIn = async (email: string, password: string) => {
@@ -66,9 +112,19 @@ export const getCurrentProfile = async () => {
     .from('users')
     .select('*')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
-  return { user, profile, error };
+  if (error) return { user, profile: null, error };
+  if (profile) return { user, profile, error: null };
+
+  const { profile: createdProfile, error: profileError } = await ensureUserProfile({
+    businessId: normalizeUuid(user.user_metadata?.business_id),
+    name: user.user_metadata?.name,
+    businessName: user.user_metadata?.business_name,
+    industry: user.user_metadata?.industry,
+  });
+
+  return { user, profile: createdProfile, error: profileError };
 };
 
 export default supabase;

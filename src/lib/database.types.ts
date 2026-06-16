@@ -56,7 +56,7 @@ export interface Database {
           id: string;
           email: string;
           name: string;
-          business_id: string;
+          business_id: string | null;
           role: string;
           created_at: string;
         };
@@ -64,7 +64,7 @@ export interface Database {
           id?: string;
           email: string;
           name: string;
-          business_id: string;
+          business_id?: string | null;
           role: string;
           created_at?: string;
         };
@@ -72,7 +72,7 @@ export interface Database {
           id?: string;
           email?: string;
           name?: string;
-          business_id?: string;
+          business_id?: string | null;
           role?: string;
           created_at?: string;
         };
@@ -420,6 +420,27 @@ export interface Database {
     };
     Views: {};
     Functions: {
+      ensure_user_profile: {
+        Args: {
+          p_business_id?: string | null;
+          p_name?: string | null;
+          p_business_name?: string | null;
+          p_industry?: string | null;
+        };
+        Returns: Database['public']['Tables']['users']['Row'];
+      };
+      resolve_profile_business_id: {
+        Args: {
+          p_business_id?: string | null;
+          p_business_name?: string | null;
+          p_industry?: string | null;
+        };
+        Returns: string | null;
+      };
+      safe_uuid: {
+        Args: { value?: string | null };
+        Returns: string | null;
+      };
       create_pos_sale: {
         Args: {
           p_business_id: string;

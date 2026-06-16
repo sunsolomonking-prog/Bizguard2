@@ -26,7 +26,7 @@ const toAppUser = (profile: Profile): AppUser => ({
   id: profile.id,
   email: profile.email,
   name: profile.name || profile.email.split('@')[0],
-  businessId: profile.business_id || '',
+  businessId: profile.business_id ?? null,
   role: (profile.role === 'manager' || profile.role === 'staff' ? profile.role : 'owner'),
   createdAt: profile.created_at,
 });
