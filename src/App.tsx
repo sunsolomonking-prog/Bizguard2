@@ -22,6 +22,8 @@ import type { Database } from './lib/database.types';
 
 type Profile = Database['public']['Tables']['users']['Row'];
 
+const PremiumLandingHero = React.lazy(() => import('./components/landing/PremiumLandingHero'));
+
 const toAppUser = (profile: Profile): AppUser => ({
   id: profile.id,
   email: profile.email,
@@ -145,59 +147,75 @@ const LoginPage: React.FC = () => {
   const submitLabel = mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-2">BizGuard</h1>
-          <p className="text-slate-400">Your Intelligent Business Management Platform</p>
-        </div>
-
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-          <h2 className="text-xl font-bold text-white mb-6">{title}</h2>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {mode === 'signup' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Your name</label>
-                  <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Business Owner" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Business name</label>
-                  <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="My Store" required />
-                </div>
-              </>
-            )}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="you@example.com" required />
-            </div>
-            {mode !== 'reset' && (
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••" minLength={8} required />
-              </div>
-            )}
-            <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-xl font-semibold hover:from-emerald-600 hover:to-cyan-600 transition-all shadow-lg shadow-emerald-500/25 disabled:opacity-50">
-              {isSubmitting ? 'Please wait...' : submitLabel}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center space-y-2">
-            {mode !== 'signin' && <button onClick={() => setMode('signin')} className="text-emerald-400 hover:text-emerald-300 text-sm font-medium">Back to sign in</button>}
-            {mode === 'signin' && (
-              <>
-                <p className="text-slate-400 text-sm">Don't have an account? <button onClick={() => setMode('signup')} className="text-emerald-400 hover:text-emerald-300 font-medium">Start Free Trial</button></p>
-                <button onClick={() => setMode('reset')} className="text-slate-400 hover:text-slate-300 text-sm">Forgot password?</button>
-              </>
-            )}
-          </div>
-        </div>
+    <div className="min-h-screen bg-slate-950 lg:grid lg:grid-cols-[minmax(0,1fr)_480px] xl:grid-cols-[minmax(0,1fr)_520px]">
+      <div className="min-h-[620px] lg:min-h-screen">
+        <React.Suspense
+          fallback={
+            <div className="min-h-[620px] bg-gradient-to-br from-slate-950 via-emerald-950 to-cyan-950 lg:min-h-screen" />
+          }
+        >
+          <PremiumLandingHero />
+        </React.Suspense>
       </div>
+
+      <aside id="auth-panel" className="relative z-40 flex min-h-screen items-center justify-center border-l border-white/10 bg-slate-950/95 p-5 shadow-2xl shadow-black/40 lg:backdrop-blur-xl">
+        <div className="w-full max-w-md">
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 shadow-2xl shadow-cyan-500/30">
+              <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-black text-white">BizGuard</h2>
+            <p className="mt-2 text-sm font-medium text-cyan-100/70">Secure access to your business intelligence hub</p>
+          </div>
+
+          <div className="rounded-3xl border border-white/15 bg-white/[0.08] p-7 shadow-2xl shadow-cyan-950/30 backdrop-blur-2xl">
+            <h1 className="mb-6 text-xl font-bold text-white">{title}</h1>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {mode === 'signup' && (
+                <>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-300">Your name</label>
+                    <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Business Owner" required />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-300">Business name</label>
+                    <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="My Store" required />
+                  </div>
+                </>
+              )}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-300">Email</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="you@example.com" required />
+              </div>
+              {mode !== 'reset' && (
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-300">Password</label>
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••" minLength={8} required />
+                </div>
+              )}
+              <button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 py-3 font-black text-slate-950 shadow-lg shadow-cyan-500/25 transition-all hover:from-emerald-300 hover:to-cyan-300 disabled:cursor-not-allowed disabled:opacity-50">
+                {isSubmitting ? 'Please wait...' : submitLabel}
+              </button>
+            </form>
+
+            <div className="mt-6 space-y-2 text-center">
+              {mode !== 'signin' && <button onClick={() => setMode('signin')} className="text-sm font-medium text-emerald-300 hover:text-emerald-200">Back to sign in</button>}
+              {mode === 'signin' && (
+                <>
+                  <p className="text-sm text-slate-400">Don't have an account? <button onClick={() => setMode('signup')} className="font-bold text-emerald-300 hover:text-emerald-200">Start Free Trial</button></p>
+                  <button onClick={() => setMode('reset')} className="text-sm text-slate-400 hover:text-slate-300">Forgot password?</button>
+                </>
+              )}
+            </div>
+          </div>
+
+          <p className="mt-6 text-center text-xs leading-5 text-slate-500">
+            Protected by Supabase Auth, tenant-aware RLS, and BizGuard secure onboarding.
+          </p>
+        </div>
+      </aside>
     </div>
   );
 };

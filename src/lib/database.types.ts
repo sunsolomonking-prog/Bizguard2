@@ -429,6 +429,16 @@ export interface Database {
         };
         Returns: Database['public']['Tables']['users']['Row'];
       };
+      ensure_user_profile_for_auth_user: {
+        Args: {
+          p_user_id: string;
+          p_business_id?: string | null;
+          p_name?: string | null;
+          p_business_name?: string | null;
+          p_industry?: string | null;
+        };
+        Returns: Database['public']['Tables']['users']['Row'];
+      };
       resolve_profile_business_id: {
         Args: {
           p_business_id?: string | null;

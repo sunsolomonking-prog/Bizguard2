@@ -21,7 +21,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-export const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+export const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const normalizeUuid = (value?: string | null) => {
   const trimmed = value?.trim();
@@ -40,6 +40,11 @@ export const ensureUserProfile = async (options?: {
   businessName?: string | null;
   industry?: string | null;
 }) => {
+  const providedBusinessId = options?.businessId?.trim();
+  if (providedBusinessId && !normalizeUuid(providedBusinessId)) {
+    return { profile: null, error: new Error('Invalid business ID. Please refresh and try again.') };
+  }
+
   const { data, error } = await supabase.rpc('ensure_user_profile', {
     p_business_id: normalizeUuid(options?.businessId),
     p_name: normalizeNullableText(options?.name),
@@ -51,9 +56,17 @@ export const ensureUserProfile = async (options?: {
 };
 
 export const signUp = async (email: string, password: string, businessName: string, name?: string, businessId?: string | null) => {
+  const providedBusinessId = businessId?.trim();
+  if (providedBusinessId && !normalizeUuid(providedBusinessId)) {
+    return {
+      data: { user: null, session: null },
+      error: new Error('Invalid business ID. Please refresh and try again.'),
+    };
+  }
+
   const normalizedBusinessId = normalizeUuid(businessId);
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({ 
     email,
     password,
     options: {
